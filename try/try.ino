@@ -30,7 +30,7 @@
 // SPO2 stuff
   float heart_rate;
   float heart_rate_ecg;
-  float spO2;
+  float spO2,received;
   int ir;
 float sp, hr, hr_ecg;
 int zeroComma = 0, firstComma = 0, secondComma = 0, thirdComma = 0;
@@ -55,7 +55,7 @@ void setup() {
   Firebase.begin(FIREBASE_HOST,FIREBASE_AUTH);
 }
 
-int n = 0;
+int check_count = 0;
 
 void loop() {
 
@@ -91,16 +91,16 @@ if (Serial.available())
   /*Serial.println(sp);
    // Serial.println(hr);
    // Serial.println(hr_ecg);*/
-  if ((sp != 0))
+  if ((sp > 0))
   {
 
     spO2 = sp;
   }
-  if (hr != 0)
+  if (hr > 0)
   {
     heart_rate = hr;
   }
-  if (hr_ecg != 0)
+  if (hr_ecg > 0)
   {
     heart_rate_ecg = hr_ecg;
   }
@@ -112,6 +112,16 @@ if (Serial.available())
 
 
 
+  Firebase.setString("message", "Measuring");
+  // handle error
+  if (Firebase.failed()) {
+     // Serial.print("setting /message failed:");
+     // Serial.println(Firebase.error());  
+      return;
+  }
+  
+  
+  
 
 
   // set value
@@ -159,16 +169,7 @@ if (Serial.available())
   //Firebase.remove("number");
   //delay(1000);
 
-  // set string value
-  //Firebase.setString("message", "hello world");
-  // handle error
-  //if (Firebase.failed()) {
-  //   // Serial.print("setting /message failed:");
-  //   // Serial.println(Firebase.error());  
-  //    return;
-  //}
-  //delay(1000);
-  
+
   // set bool value
   //Firebase.setBool("truth", false);
   // handle error
@@ -182,7 +183,10 @@ if (Serial.available())
   // append a new value to /logs
   if (spO2>0) {
   String name = Firebase.pushFloat("SpO2 values", spO2);
-  // handle error
+  
+ 
+
+
   if (Firebase.failed()) {
      // Serial.print("pushing /SpO2 values failed:");
      // Serial.println(Firebase.error());  
@@ -192,5 +196,5 @@ if (Serial.available())
  // Serial.print("pushed: /SpO2 values/");
  // Serial.println(name);
  // delay(1000);
- delay(3000);
+ delay(2000);
 }
