@@ -28,10 +28,10 @@
 
 
 // SPO2 stuff
-  float heart_rate;
-  float heart_rate_ecg;
-  float spO2,received;
-  int ir;
+float heart_rate;
+float heart_rate_ecg;
+float spO2, received;
+int ir;
 float sp, hr, hr_ecg;
 int zeroComma = 0, firstComma = 0, secondComma = 0, thirdComma = 0;
 String ox, hrate, hrate_ecg, data;
@@ -43,25 +43,24 @@ void setup() {
 
   // connect to wifi.
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
- // Serial.print("connecting");
+  // Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
-   // Serial.print(".");
+    // Serial.print(".");
     delay(500);
   }
- // Serial.println();
- // Serial.print("connected: ");
- // Serial.println(WiFi.localIP());
-  
-  Firebase.begin(FIREBASE_HOST,FIREBASE_AUTH);
+  // Serial.println();
+  // Serial.print("connected: ");
+  // Serial.println(WiFi.localIP());
+
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
 int check_count = 0;
 
 void loop() {
 
-// Spo2 Stuff
-if (Serial.available())
-  {
+  // Spo2 Stuff
+  if (Serial.available()) {
     data = Serial.readStringUntil('\n');
     Serial.println(data);
   }
@@ -73,7 +72,7 @@ if (Serial.available())
   /*Serial.println(firstComma);
    // Serial.println(secondComma);
    // Serial.println(thirdComma);*/
-  ox = data.substring((zeroComma+1), firstComma);
+  ox = data.substring((zeroComma + 1), firstComma);
   hrate = data.substring((firstComma + 1), (secondComma));
   hrate_ecg = data.substring((secondComma + 1), thirdComma);
   /*Serial.println("The first reading of " + data + " is " + ox);
@@ -91,17 +90,14 @@ if (Serial.available())
   /*Serial.println(sp);
    // Serial.println(hr);
    // Serial.println(hr_ecg);*/
-  if ((sp > 0))
-  {
+  if ((sp > 0)) {
 
     spO2 = sp;
   }
-  if (hr > 0)
-  {
+  if (hr > 0) {
     heart_rate = hr;
   }
-  if (hr_ecg > 0)
-  {
+  if (hr_ecg > 0) {
     heart_rate_ecg = hr_ecg;
   }
 
@@ -112,45 +108,45 @@ if (Serial.available())
 
 
 
-  Firebase.setString("message", "Measuring");
-  // handle error
-  if (Firebase.failed()) {
-     // Serial.print("setting /message failed:");
-     // Serial.println(Firebase.error());  
-      return;
-  }
-  
-  
-  
+  // Firebase.setString("message", "Measuring");
+  // // handle error
+  // if (Firebase.failed()) {
+  //   // Serial.print("setting /message failed:");
+  //   // Serial.println(Firebase.error());
+  //   return;
+  // }
+
+
+
 
 
   // set value
-  Firebase.setFloat("SpO2", spO2);
+  Firebase.setFloat("NITxxx40/SpO2", spO2);
   // handle error
   if (Firebase.failed()) {
-     // Serial.print("setting /number failed:");
-     // Serial.println(Firebase.error());  
-      return;
+    // Serial.print("setting /number failed:");
+    // Serial.println(Firebase.error());
+    return;
   }
-  Firebase.setFloat("Heart Rate", heart_rate);
+  Firebase.setFloat("NITxxx40/Heart Rate", heart_rate);
   // handle error
   if (Firebase.failed()) {
-     // Serial.print("setting /number failed:");
-     // Serial.println(Firebase.error());  
-      return;
+    // Serial.print("setting /number failed:");
+    // Serial.println(Firebase.error());
+    return;
   }
-  Firebase.setFloat("Heart Rate ECG", heart_rate_ecg);
+  Firebase.setFloat("NITxxx40/Heart Rate ECG", heart_rate_ecg);
   // handle error
   if (Firebase.failed()) {
-     // Serial.print("setting /number failed:");
-     // Serial.println(Firebase.error());  
-      return;
+    // Serial.print("setting /number failed:");
+    // Serial.println(Firebase.error());
+    return;
   }
-  
-  
-  
 
-  // get value 
+
+
+
+  // get value
   //Serial.print("SpO2: ");
   //Serial.println(Firebase.getFloat("SpO2"));
   //delay(1000);
@@ -158,12 +154,12 @@ if (Serial.available())
   // update value
   //Firebase.setFloat("SpO2", spO2);
   // handle error
-    //if (Firebase.failed()) {
-     // Serial.print("Connection to firebase failed");
-     // Serial.println(Firebase.error());  
-      //return;
+  //if (Firebase.failed()) {
+  // Serial.print("Connection to firebase failed");
+  // Serial.println(Firebase.error());
+  //return;
   //}
-//  delay(2000);
+  //  delay(2000);
 
   // remove value
   //Firebase.remove("number");
@@ -175,26 +171,26 @@ if (Serial.available())
   // handle error
   //if (Firebase.failed()) {
   //   // Serial.print("setting /truth failed:");
-  //   // Serial.println(Firebase.error());  
+  //   // Serial.println(Firebase.error());
   //    return;
   //}
   //delay(1000);
 
   // append a new value to /logs
-  if (spO2>0) {
-  String name = Firebase.pushFloat("SpO2 values", spO2);
-  
- 
+  // if (spO2 > 0) {
+  //   String name = Firebase.pushFloat("SpO2 values", spO2);
 
 
-  if (Firebase.failed()) {
-     // Serial.print("pushing /SpO2 values failed:");
-     // Serial.println(Firebase.error());  
-      return;
-  }
-  }
- // Serial.print("pushed: /SpO2 values/");
- // Serial.println(name);
- // delay(1000);
- delay(2000);
+
+
+  //   if (Firebase.failed()) {
+  //     // Serial.print("pushing /SpO2 values failed:");
+  //     // Serial.println(Firebase.error());
+  //     return;
+  //   }
+  // }
+  // Serial.print("pushed: /SpO2 values/");
+  // Serial.println(name);
+  // delay(1000);
+  delay(2000);
 }
